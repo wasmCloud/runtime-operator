@@ -1,0 +1,8 @@
+namespace: wasmcloud-system
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: policies
+    files:
+      - basic.rego

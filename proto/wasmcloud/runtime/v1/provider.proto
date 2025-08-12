@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package wasmcloud.runtime.v1;
+
+import "wasmcloud/runtime/v1/link.proto";
+import "wasmcloud/runtime/v1/workload.proto";
+
+message ProviderStartRequest {
+  string namespace = 1;
+  string name = 2;
+  map<string, string> annotations = 3;
+  string image = 4;
+  bytes image_pull_secret = 5;
+  map<string, string> config = 6;
+  // if we need secrets, altho i'd leave it out. the host does the xkey dance
+  // locally.
+  map<string, string> secrets = 7;
+  // Component-to-provider links where this provider is the target
+  // These represent interfaces that components will call on this provider
+  repeated Link exports = 8;
+  // Host-to-provider links
+  // becomes part of HostData during provider start
+  repeated Link imports = 9;
+}
+
+message ProviderStartResponse {
+  string id = 1;
+  WorkloadStatus status = 2;
+}

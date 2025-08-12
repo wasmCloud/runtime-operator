@@ -1,0 +1,23 @@
+# permissions for end users to view clusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: operator
+    app.kubernetes.io/managed-by: kustomize
+  name: k8s-cluster-viewer-role
+rules:
+- apiGroups:
+  - k8s.cosmonic.io
+  resources:
+  - clusters
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - k8s.cosmonic.io
+  resources:
+  - clusters/status
+  verbs:
+  - get

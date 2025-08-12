@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package wasmcloud.runtime.v1;
+
+import "wasmcloud/runtime/v1/link.proto";
+import "wasmcloud/runtime/v1/wit_interface.proto";
+import "wasmcloud/runtime/v1/workload.proto";
+
+message ComponentStartRequest {
+  string namespace = 1;
+  string name = 2;
+  map<string, string> annotations = 3;
+  string image = 4;
+  bytes image_pull_secret = 5;
+  uint32 max_instances = 6;
+  map<string, string> config = 7;
+  // if we need secrets, altho i'd leave it out. the host does the xkey dance
+  // locally.
+  map<string, string> secrets = 8;
+
+  // Host-to-component links
+  repeated Link imports = 9;
+  // Meaning: "I want to expose this interface to the host rpc mesh"
+  repeated WitInterface exports = 10;
+}
+
+message ComponentStartResponse {
+  string id = 1;
+  WorkloadStatus status = 2;
+}

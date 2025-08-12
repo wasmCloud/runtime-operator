@@ -1,0 +1,67 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - runtime.cosmonic.io
+  resources:
+  - configs
+  - links
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.cosmonic.io
+  resources:
+  - configs/finalizers
+  - links/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.cosmonic.io
+  resources:
+  - configs/status
+  - links/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - runtime.wasmcloud.dev
+  resources:
+  - componentreplicas
+  - components
+  - providers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - runtime.wasmcloud.dev
+  resources:
+  - componentreplicas/finalizers
+  - components/finalizers
+  - providers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - runtime.wasmcloud.dev
+  resources:
+  - componentreplicas/status
+  - components/status
+  - providers/status
+  verbs:
+  - get
+  - patch
+  - update

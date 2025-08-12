@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package wasmcloud.runtime.v1;
+
+enum Transport {
+  TRANSPORT_UNSPECIFIED = 0;
+  TRANSPORT_NATS = 1;
+  TRANSPORT_TCP = 2;
+}

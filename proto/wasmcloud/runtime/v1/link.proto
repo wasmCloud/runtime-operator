@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package wasmcloud.runtime.v1;
+
+import "wasmcloud/runtime/v1/transport.proto";
+import "wasmcloud/runtime/v1/wit_interface.proto";
+import "wasmcloud/runtime/v1/workload.proto";
+
+message Link {
+  string name = 1;
+  WitInterface wit = 2;
+  LinkTarget target = 3;
+  map<string, string> config = 4;
+  Transport transport = 5;
+}
+
+message LinkTarget {
+  WorkloadType workload_type = 1;
+  string name = 2;
+  string namespace = 3;
+}

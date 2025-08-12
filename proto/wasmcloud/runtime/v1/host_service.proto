@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package wasmcloud.runtime.v1;
+
+import "wasmcloud/runtime/v1/component.proto";
+import "wasmcloud/runtime/v1/provider.proto";
+import "wasmcloud/runtime/v1/workload_status.proto";
+import "wasmcloud/runtime/v1/workload_stop.proto";
+
+// Host -> Control Plane
+// a.k.a. The heartbeat ticker inside the host
+// This is not a real service, it is here to show how hearbeats play into host
+// registration.
+//
+// service ControlPlaneService {
+//   rpc Heartbeat(HostHeartbeat) returns (google.protobuf.Empty);
+// }
+
+// Control Plane -> Host
+// This is the shape of messages exchanged between the control plane and the
+// host.
+// The Control-Plane waits for the first heartbeat then start sending
+// requests for HostService
+service HostService {
+  // Separate entrypoints for each workload type
+  rpc ComponentStart(ComponentStartRequest) returns (ComponentStartResponse);
+  rpc ProviderStart(ProviderStartRequest) returns (ProviderStartResponse);
+
+  // For all workload types
+  rpc WorkloadStatus(WorkloadStatusRequest) returns (WorkloadStatusResponse);
+  rpc WorkloadStop(WorkloadStopRequest) returns (WorkloadStopResponse);
+}

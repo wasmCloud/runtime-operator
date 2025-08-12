@@ -1,0 +1,17 @@
+namespace: wasmcloud-system
+
+resources:
+  #  - ../default
+  - ../wasmcloud/nats
+  - ../wasmcloud/wadm
+
+images:
+  - name: wadm
+    newName: ghcr.io/wasmcloud/wadm
+    newTag: canary
+  - name: nats
+    newName: nats
+    newTag: 2.10.22-alpine
+  - name: nats-config-reloader
+    newName: natsio/nats-server-config-reloader
+    newTag: 0.16.0
