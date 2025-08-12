@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	wasmv1 "github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v1"
+	wasmv1 "github.com/cosmonic-labs/runtime-operator/rpc/wasmcloud/runtime/v1"
 	"go.wasmcloud.dev/x/wasmbus"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

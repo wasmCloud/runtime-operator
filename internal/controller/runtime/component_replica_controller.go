@@ -25,7 +25,7 @@ import (
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
 	"github.com/cosmonic-labs/runtime-operator/internal/crdtools"
 	"github.com/cosmonic-labs/runtime-operator/internal/lattice"
-	wasmv1 "github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v1"
+	wasmv1 "github.com/cosmonic-labs/runtime-operator/rpc/wasmcloud/runtime/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
