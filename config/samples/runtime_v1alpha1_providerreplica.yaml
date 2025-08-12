@@ -1,9 +1,0 @@
-apiVersion: runtime.wasmcloud.dev/v1alpha1
-kind: ProviderReplica
-metadata:
-  labels:
-    app.kubernetes.io/name: operator
-    app.kubernetes.io/managed-by: kustomize
-  name: providerreplica-sample
-spec:
-  # TODO(user): Add fields here
