@@ -49,32 +49,32 @@ jobs:
       - name: Running Test e2e
         run: make test-e2e
 
-  canary:
-    if: github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'canary')
-    needs: [lint, test]
-    permissions:
-      id-token: write
-      contents: write
-      packages: write
-    uses: ./.github/workflows/docker-build-push.yml
-    secrets: inherit
-    with:
-      file: Dockerfile
-      image: ghcr.io/cosmonic-labs/runtime-operator
-      tags: |
-        type=raw,value=canary
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [lint, test]
-    permissions:
-      id-token: write
-      contents: write
-      packages: write
-    uses: ./.github/workflows/docker-build-push.yml
-    secrets: inherit
-    with:
-      file: Dockerfile
-      image: ghcr.io/cosmonic-labs/runtime-operator
-      tags: |
-        type=semver,pattern={{version}},value=${{ github.ref_name }}
+  # canary:
+  #   if: github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'canary')
+  #   needs: [lint, test]
+  #   permissions:
+  #     id-token: write
+  #     contents: write
+  #     packages: write
+  #   uses: ./.github/workflows/docker-build-push.yml
+  #   secrets: inherit
+  #   with:
+  #     file: Dockerfile
+  #     image: ghcr.io/cosmonic-labs/runtime-operator
+  #     tags: |
+  #       type=raw,value=canary
+  #
+  # release:
+  #   if: startsWith(github.ref, 'refs/tags/v')
+  #   needs: [lint, test]
+  #   permissions:
+  #     id-token: write
+  #     contents: write
+  #     packages: write
+  #   uses: ./.github/workflows/docker-build-push.yml
+  #   secrets: inherit
+  #   with:
+  #     file: Dockerfile
+  #     image: ghcr.io/cosmonic-labs/runtime-operator
+  #     tags: |
+  #       type=semver,pattern={{version}},value=${{ github.ref_name }}
