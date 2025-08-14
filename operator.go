@@ -17,9 +17,11 @@ type EmbeddedOperatorConfig struct {
 	NatsOptions []nats.Option
 	// Heartbeat TTL. Used to determine how long to wait before considering a host unreachable.
 	HeartbeatTTL time.Duration
-	// Host CPU threshold (percentage). Used to calculate workload scheduling, avoiding hosts that are over this threshold.
+	// Host CPU threshold (percentage).
+	// Used to calculate workload scheduling, avoiding hosts that are over this threshold.
 	HostCPUThreshold float64
-	// Host Memory threshold (percentage). Used to calculate workload scheduling, avoiding hosts that are over this threshold.
+	// Host Memory threshold (percentage).
+	// Used to calculate workload scheduling, avoiding hosts that are over this threshold.
 	HostMemoryThreshold float64
 	// Disable Artifact Controller. If set, Artifacts must be marked as 'Ready' elsewhere.
 	// Useful when introducing a custom artifact management solution.
