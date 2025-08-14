@@ -36,7 +36,7 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	"go.wasmcloud.dev/x/wasmbus"
+	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
 
 	runtime_operator "github.com/cosmonic-labs/runtime-operator"
 	"github.com/nats-io/nats.go"

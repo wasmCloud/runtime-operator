@@ -5,8 +5,8 @@ import (
 
 	runtimecontroller "github.com/cosmonic-labs/runtime-operator/internal/controller/runtime"
 	"github.com/cosmonic-labs/runtime-operator/pkg/lattice"
+	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
 	"github.com/nats-io/nats.go"
-	"go.wasmcloud.dev/x/wasmbus"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	wasmv1 "github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v1"
-	"go.wasmcloud.dev/x/wasmbus"
+	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"sigs.k8s.io/controller-runtime/pkg/log"
