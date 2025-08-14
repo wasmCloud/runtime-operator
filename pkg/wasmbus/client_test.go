@@ -127,7 +127,7 @@ func TestLatticeRequest(t *testing.T) {
 				errCh <- err
 				return
 			}
-			resp.Name = "response"
+			resp.Name = "resp"
 			respMsg, err := Encode(msg.Reply, resp)
 			if err != nil {
 				errCh <- err
@@ -151,7 +151,7 @@ func TestLatticeRequest(t *testing.T) {
 		default:
 		}
 
-		if want, got := "response", resp.Name; want != got {
+		if want, got := "resp", resp.Name; want != got {
 			t.Errorf("Execute failed: name: want %s, got %s", want, got)
 		}
 	})

@@ -134,11 +134,14 @@ func TestRequestHandler(t *testing.T) {
 
 	bus := NewNatsBus(nc)
 	server := NewServer(bus, "test")
-	handler := NewRequestHandler(testRequest{}, testResponse{}, func(ctx context.Context, req *testRequest) (*testResponse, error) {
-		return &testResponse{
-			Hello: "world",
-		}, nil
-	})
+	handler := NewRequestHandler(
+		testRequest{},
+		testResponse{},
+		func(ctx context.Context, req *testRequest) (*testResponse, error) {
+			return &testResponse{
+				Hello: "world",
+			}, nil
+		})
 	_ = server.RegisterHandler("test", handler)
 
 	rawResp, err := server.Request(context.TODO(), NewMessage("test"))

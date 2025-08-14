@@ -76,16 +76,16 @@ func (l *LatticeRequest[T, Y]) Execute(ctx context.Context) (*Y, error) {
 func Encode(subject string, payload any) (*Message, error) {
 	var err error
 	wasmbusMsg := NewMessage(subject)
-	wasmbusMsg.Header.Set("Content-Type", "application/json")
-	wasmbusMsg.Data, err = EncodeMimetype(payload, "application/json")
+	wasmbusMsg.Header.Set("Content-Type", mimetypeJSON)
+	wasmbusMsg.Data, err = EncodeMimetype(payload, mimetypeJSON)
 	return wasmbusMsg, err
 }
 
 func EncodeMimetype(payload any, mimeType string) ([]byte, error) {
 	switch mimeType {
-	case "application/json", "":
+	case mimetypeJSON, "":
 		return json.Marshal(payload)
-	case "application/yaml":
+	case mimeTypeYAML:
 		return yaml.Marshal(payload)
 	default:
 		return nil, errors.New("unsupported content type")
@@ -103,9 +103,9 @@ func Decode(rawResp *Message, into any) error {
 
 	contentType := rawResp.Header.Get("Content-Type")
 	switch contentType {
-	case "application/json", "":
+	case mimetypeJSON, "":
 		return json.Unmarshal(rawResp.Data, into)
-	case "application/yaml":
+	case mimeTypeYAML:
 		return yaml.Unmarshal(rawResp.Data, into)
 	default:
 		return errors.New("unsupported content type")

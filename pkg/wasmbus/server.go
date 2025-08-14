@@ -107,8 +107,13 @@ func (s *Server) RegisterHandler(subject string, handler AnyServerHandler) error
 }
 
 // NewRequestHandler returns a new server handler instance.
-// The `T` and `Y` types are used to define the Request and Response types. Both should be structs. They will be used as template for request/responses.
-func NewRequestHandler[T any, Y any](req T, resp Y, handler func(context.Context, *T) (*Y, error)) *RequestHandler[T, Y] {
+// The `T` and `Y` types are used to define the Request and Response types. Both should be structs.
+// They will be used as template for request/responses.
+func NewRequestHandler[T any, Y any](
+	req T,
+	resp Y,
+	handler func(context.Context, *T) (*Y, error),
+) *RequestHandler[T, Y] {
 	return &RequestHandler[T, Y]{
 		Request:  req,
 		Response: resp,

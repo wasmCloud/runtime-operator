@@ -27,6 +27,7 @@ func TestNatsConnect(t *testing.T) {
 func TestNatsPublish(t *testing.T) {
 	defer wasmbustest.MustStartNats(t)()
 	t.Run("success", func(t *testing.T) {
+		testSubject := "pubsubject"
 		nc, err := NatsConnect(NatsDefaultURL)
 		if err != nil {
 			t.Fatal(err)
@@ -34,7 +35,7 @@ func TestNatsPublish(t *testing.T) {
 		defer nc.Close()
 		bus := NewNatsBus(nc)
 
-		sub, err := bus.Subscribe("success", 1)
+		sub, err := bus.Subscribe(testSubject, 1)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -42,12 +43,12 @@ func TestNatsPublish(t *testing.T) {
 		received := make(chan bool)
 
 		go sub.Handle(func(msg *Message) {
-			if msg.Subject == "success" {
+			if msg.Subject == testSubject {
 				received <- true
 			}
 		})
 
-		msg := NewMessage("success")
+		msg := NewMessage(testSubject)
 		msg.Data = []byte("hello")
 		err = bus.Publish(msg)
 		if err != nil {
@@ -81,6 +82,7 @@ func TestNatsRequest(t *testing.T) {}
 func TestNatsSubscribe(t *testing.T) {
 	defer wasmbustest.MustStartNats(t)()
 	t.Run("success", func(t *testing.T) {
+		testSubject := "subsubject"
 		nc, err := NatsConnect(NatsDefaultURL)
 		if err != nil {
 			t.Fatal(err)
@@ -88,7 +90,7 @@ func TestNatsSubscribe(t *testing.T) {
 		defer nc.Close()
 		bus := NewNatsBus(nc)
 
-		sub, err := bus.Subscribe("success", 1)
+		sub, err := bus.Subscribe(testSubject, 1)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -96,12 +98,12 @@ func TestNatsSubscribe(t *testing.T) {
 
 		received := make(chan bool)
 		go sub.Handle(func(msg *Message) {
-			if msg.Subject == "success" {
+			if msg.Subject == testSubject {
 				received <- true
 			}
 		})
 
-		msg := NewMessage("success")
+		msg := NewMessage(testSubject)
 		err = bus.Publish(msg)
 		if err != nil {
 			t.Fatal(err)

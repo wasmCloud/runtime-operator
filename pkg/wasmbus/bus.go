@@ -16,12 +16,8 @@ const (
 	// NoBackLog is used to indicate that the subscription should not have a backlog.
 	NoBackLog = 0
 
-	// PrefixWadm is the prefix for WasmCloud Admin API.
-	PrefixWadm = "wadm.api"
-	// PrefixEvents is the prefix for Lattice Events.
-	PrefixEvents = "wasmbus.evt"
-	// PrefixControl is the prefix for Lattice RPC.
-	PrefixCtlV1 = "wasmbus.ctl.v1"
+	mimetypeJSON = "application/json"
+	mimeTypeYAML = "application/yaml"
 )
 
 var (
