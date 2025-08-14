@@ -38,11 +38,10 @@ import (
 
 	"go.wasmcloud.dev/x/wasmbus"
 
-	"github.com/cosmonic-labs/runtime-operator/internal/lattice"
+	runtime_operator "github.com/cosmonic-labs/runtime-operator"
 	"github.com/nats-io/nats.go"
 
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
-	runtimecontroller "github.com/cosmonic-labs/runtime-operator/internal/controller/runtime"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -113,26 +112,18 @@ func main() {
 	ctrl.SetLogger(zap.New(
 		zapOpts...,
 	))
-	var natsOpts []nats.Option
+
+	operatorCfg := runtime_operator.EmbeddedOperatorConfig{
+		DisableArtifactController: disableArtifactController,
+		NatsURL:                   natsUrl,
+		HeartbeatTTL:              60 * time.Second,
+		HostCPUThreshold:          cpuBackpressureThreshold,
+		HostMemoryThreshold:       memoryBackpressureThreshold,
+	}
+
 	if natsCreds != "" {
-		natsOpts = append(natsOpts, nats.UserCredentials(natsCreds))
+		operatorCfg.NatsOptions = append(operatorCfg.NatsOptions, nats.UserCredentials(natsCreds))
 	}
-
-	nc, err := wasmbus.NatsConnect(natsUrl, natsOpts...)
-	if err != nil {
-		setupLog.Error(err, "Failed to connect to NATS")
-		os.Exit(1)
-	}
-	bus := wasmbus.NewNatsBus(nc)
-
-	hostHeartbeats := make(chan string, 100)
-	dispatch := lattice.NewDispatch(bus, 60*time.Second, func(hostID string) {
-		select {
-		case hostHeartbeats <- hostID:
-		default:
-			setupLog.Info("heartbeat channel is full. Dropping heartbeat.", "hostID", hostID)
-		}
-	})
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
 	// due to its vulnerabilities. More specifically, disabling http/2 will
@@ -200,87 +191,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := mgr.Add(dispatch); err != nil {
-		setupLog.Error(err, "unable to add dispatch to manager")
+	_, err = runtime_operator.NewEmbeddedOperator(mgr, operatorCfg)
+	if err != nil {
+		setupLog.Error(err, "unable to create runtime operator")
 		os.Exit(1)
 	}
 
-	crdIndexer := &lattice.Indexer{
-		Client:       mgr.GetClient(),
-		FieldIndexer: mgr.GetFieldIndexer(),
-	}
-	if err := mgr.Add(crdIndexer); err != nil {
-		setupLog.Error(err, "unable to add state manager to manager")
-		os.Exit(1)
-	}
-
-	if err = (&runtimecontroller.HostReconciler{
-		Client:                      mgr.GetClient(),
-		Scheme:                      mgr.GetScheme(),
-		Dispatch:                    dispatch,
-		HostHeartbeats:              hostHeartbeats,
-		CPUBackpressureThreshold:    cpuBackpressureThreshold,
-		MemoryBackpressureThreshold: memoryBackpressureThreshold,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Host")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.ConfigReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Config")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.ComponentReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Component")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.ComponentReplicaReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "ComponentReplica")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.ProviderReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Provider")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.ProviderReplicaReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "ProviderReplica")
-		os.Exit(1)
-	}
-	if err = (&runtimecontroller.LinkReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Link")
-		os.Exit(1)
-	}
-
-	if !disableArtifactController {
-		if err = (&runtimecontroller.ArtifactReconciler{
-			Client: mgr.GetClient(),
-			Scheme: mgr.GetScheme(),
-		}).SetupWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create controller", "controller", "Artifact")
-			os.Exit(1)
-		}
-	}
+	// +kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")

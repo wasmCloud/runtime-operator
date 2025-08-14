@@ -31,7 +31,7 @@ import (
 
 	"github.com/cosmonic-labs/runtime-operator/api/condition"
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
-	"github.com/cosmonic-labs/runtime-operator/internal/lattice"
+	"github.com/cosmonic-labs/runtime-operator/pkg/lattice"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

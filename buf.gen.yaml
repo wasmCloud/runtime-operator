@@ -5,7 +5,7 @@ managed:
   override:
     - file_option: go_package
       # JAF: change this once runtime-operator is moved to wasmCloud
-      value: github.com/cosmonic-labs/runtime-operator/rpc/wasmcloud/runtime/v1
+      value: github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v1
       path: wasmcloud/runtime/v1
 plugins:
   # Docs
@@ -15,9 +15,9 @@ plugins:
   # Go: All packages go to 'rpc'
   # We generate vanilla proto & ConnectRPC bindings
   - remote: buf.build/protocolbuffers/go:v1.36.4
-    out: rpc
+    out: pkg/rpc
     opt: paths=source_relative
 
   - remote: buf.build/connectrpc/go:v1.18.1
-    out: rpc
+    out: pkg/rpc
     opt: paths=source_relative

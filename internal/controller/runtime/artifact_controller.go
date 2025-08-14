@@ -22,7 +22,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/cosmonic-labs/runtime-operator/api/condition"
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
@@ -35,8 +34,6 @@ type ArtifactReconciler struct {
 }
 
 func (r *ArtifactReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logger := log.FromContext(ctx)
-
 	artifact := &runtimev1alpha1.Artifact{}
 	if err := r.Get(ctx, req.NamespacedName, artifact); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -45,7 +42,6 @@ func (r *ArtifactReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	cond := artifact.Status.GetCondition(condition.TypeReady)
 
 	if cond.ObservedGeneration != artifact.GetGeneration() {
-		logger.Info("UHU", "artifact", artifact.GetGeneration(), "condition", cond.ObservedGeneration)
 		cond = condition.Available()
 		cond.ObservedGeneration = artifact.GetGeneration()
 		artifact.Status.ArtifactURL = artifact.Spec.Image

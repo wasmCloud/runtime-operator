@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
-	"github.com/cosmonic-labs/runtime-operator/internal/crdtools"
+	"github.com/cosmonic-labs/runtime-operator/pkg/crdtools"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
