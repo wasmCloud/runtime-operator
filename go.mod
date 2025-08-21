@@ -22,7 +22,7 @@ require (
 	google.golang.org/protobuf v1.36.8
 	k8s.io/api v0.33.4
 	k8s.io/apimachinery v0.33.4
-	k8s.io/client-go v0.33.0
+	k8s.io/client-go v0.33.4
 	sigs.k8s.io/controller-runtime v0.21.0
 )
 
