@@ -31,6 +31,7 @@ type EmbeddedOperatorConfig struct {
 // EmbeddedOperator is the main struct for the embedded operator.
 // It allows embedding the Runtime Operator into other applications.
 type EmbeddedOperator struct {
+	Bus      wasmbus.Bus
 	Dispatch lattice.Dispatch
 }
 
@@ -130,5 +131,6 @@ func NewEmbeddedOperator(mgr manager.Manager, cfg EmbeddedOperatorConfig) (*Embe
 
 	return &EmbeddedOperator{
 		Dispatch: dispatch,
+		Bus:      bus,
 	}, nil
 }

@@ -159,8 +159,9 @@ func (r *ConditionedReconciler[T]) SetFinalizer(finalizer string, fn func(contex
 type ctxKey string
 
 type ReconcilerContext struct {
-	ForceUpdate  bool
-	ForceRequeue bool
+	ForceUpdate       bool
+	ForceRequeue      bool
+	ReconcileInterval time.Duration
 }
 
 const ctxKeyReconcilerContext = ctxKey("reconciler-context")
@@ -171,6 +172,11 @@ func GetReconcilerContext(ctx context.Context) *ReconcilerContext {
 	}
 	// return a dummy
 	return &ReconcilerContext{}
+}
+
+// ForceStatusUpdate forces a full "Status" update, regardless if conditions have changed.
+func ForceStatusUpdate(ctx context.Context) {
+	GetReconcilerContext(ctx).ForceUpdate = true
 }
 
 // Reconcile reconciles the object with the given request.
@@ -197,12 +203,17 @@ func (r *ConditionedReconciler[T]) Reconcile(ctx context.Context, req reconcile.
 		}
 	}
 
+	reconcilerCtx := &ReconcilerContext{
+		ReconcileInterval: r.interval,
+	}
+	condCtx := context.WithValue(ctx, ctxKeyReconcilerContext, reconcilerCtx)
+
 	for _, hook := range r.beforeHooks {
-		if err := hook(ctx, obj); err != nil {
+		if err := hook(condCtx, obj); err != nil {
 			if errors.Is(err, errStatusSkip) {
 				// If the pre-hook returns ErrSkipReconciliation, we skip the reconciliation.
 				// This is useful for cases where we need to wait for a resource to be ready.
-				return reconcile.Result{RequeueAfter: r.interval}, nil
+				return reconcile.Result{RequeueAfter: reconcilerCtx.ReconcileInterval}, nil
 			}
 
 			return reconcile.Result{}, err
@@ -210,8 +221,6 @@ func (r *ConditionedReconciler[T]) Reconcile(ctx context.Context, req reconcile.
 	}
 
 	conditions := obj.ConditionedStatus()
-	reconcilerCtx := &ReconcilerContext{}
-	condCtx := context.WithValue(ctx, ctxKeyReconcilerContext, reconcilerCtx)
 	for _, condEntry := range r.conditions {
 		currentCondition := conditions.GetCondition(condEntry.condition)
 
@@ -224,6 +233,10 @@ func (r *ConditionedReconciler[T]) Reconcile(ctx context.Context, req reconcile.
 				// NOTE(lxf): if the condition function returns ErrNoop, we skip the condition.
 				// This is useful for cases where we need to wait for a resource to be ready.
 				continue
+			} else if errors.Is(condErr, errStatusSkip) {
+				// If the condition function returns ErrSkipReconciliation, we cut the reconciliation short.
+				conditions.SetConditions(ReadyCondition(condEntry.condition))
+				break
 			} else {
 				conditions.SetConditions(ErrorCondition(condEntry.condition, "Reconcile", condErr))
 			}
@@ -262,5 +275,5 @@ func (r *ConditionedReconciler[T]) Reconcile(ctx context.Context, req reconcile.
 		return reconcile.Result{Requeue: true}, nil
 	}
 
-	return reconcile.Result{RequeueAfter: r.interval}, nil
+	return reconcile.Result{RequeueAfter: reconcilerCtx.ReconcileInterval}, nil
 }
