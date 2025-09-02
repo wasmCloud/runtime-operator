@@ -17,7 +17,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.11.8
 	github.com/nats-io/nats.go v1.45.0
 	github.com/onsi/ginkgo/v2 v2.25.1
-	github.com/onsi/gomega v1.38.1
+	github.com/onsi/gomega v1.38.2
 	github.com/pkg/errors v0.9.1
 	google.golang.org/protobuf v1.36.8
 	k8s.io/api v0.34.0
