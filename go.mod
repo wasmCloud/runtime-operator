@@ -1,7 +1,7 @@
 // JAF: change once runtime-operator is moved to wasmCloud
 module github.com/cosmonic-labs/runtime-operator
 
-go 1.24.3
+go 1.25.0
 
 tool (
 	github.com/air-verse/air
