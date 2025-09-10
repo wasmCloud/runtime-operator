@@ -5,40 +5,13 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - runtime.cosmonic.io
-  resources:
-  - configs
-  - links
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - runtime.cosmonic.io
-  resources:
-  - configs/finalizers
-  - links/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - runtime.cosmonic.io
-  resources:
-  - configs/status
-  - links/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
   - runtime.wasmcloud.dev
   resources:
-  - componentreplicas
-  - components
-  - providers
+  - artifacts
+  - hosts
+  - workloaddeployments
+  - workloadreplicasets
+  - workloads
   verbs:
   - create
   - delete
@@ -50,17 +23,21 @@ rules:
 - apiGroups:
   - runtime.wasmcloud.dev
   resources:
-  - componentreplicas/finalizers
-  - components/finalizers
-  - providers/finalizers
+  - artifacts/finalizers
+  - hosts/finalizers
+  - workloaddeployments/finalizers
+  - workloadreplicasets/finalizers
+  - workloads/finalizers
   verbs:
   - update
 - apiGroups:
   - runtime.wasmcloud.dev
   resources:
-  - componentreplicas/status
-  - components/status
-  - providers/status
+  - artifacts/status
+  - hosts/status
+  - workloaddeployments/status
+  - workloadreplicasets/status
+  - workloads/status
   verbs:
   - get
   - patch

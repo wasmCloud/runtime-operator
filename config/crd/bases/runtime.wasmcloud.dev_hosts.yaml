@@ -15,28 +15,16 @@ spec:
   scope: Cluster
   versions:
   - additionalPrinterColumns:
-    - jsonPath: .metadata.labels.hostgroup
-      name: HOSTGROUP
+    - jsonPath: .hostId
+      name: HOSTID
       type: string
-    - jsonPath: .status.componentCount
-      name: COMPONENTS
-      type: integer
-    - jsonPath: .status.providerCount
-      name: PROVIDERS
-      type: integer
     - jsonPath: .status.conditions[?(@.type=="Ready")].status
       name: READY
-      type: string
-    - jsonPath: .metadata.creationTimestamp
-      name: AGE
-      type: date
-    - jsonPath: .spec.hostID
-      name: ID
       type: string
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Host is the Schema for the hosts API.
+        description: Host is the Schema for the Hosts API.
         properties:
           apiVersion:
             description: |-
@@ -45,6 +33,13 @@ spec:
               may reject unrecognized values.
               More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
+          hostId:
+            type: string
+          hostname:
+            type: string
+          httpPort:
+            format: int32
+            type: integer
           kind:
             description: |-
               Kind is a string value representing the REST resource this object represents.
@@ -55,19 +50,9 @@ spec:
             type: string
           metadata:
             type: object
-          spec:
-            description: HostSpec defines the desired state of Host.
-            properties:
-              hostID:
-                type: string
-            required:
-            - hostID
-            type: object
           status:
             description: HostStatus defines the observed state of Host.
             properties:
-              componentCount:
-                type: integer
               conditions:
                 description: Conditions of the resource.
                 items:
@@ -111,39 +96,12 @@ spec:
                   - type
                   type: object
                 type: array
-              hostName:
-                type: string
               lastSeen:
                 format: date-time
                 type: string
-              osArch:
-                type: string
-              osKernel:
-                type: string
-              osName:
-                type: string
-              providerCount:
-                type: integer
-              systemCPUUsage:
-                type: string
-              systemMemoryFree:
-                format: int64
-                type: integer
-              systemMemoryTotal:
-                format: int64
-                type: integer
-              version:
-                type: string
-            required:
-            - hostName
-            - osArch
-            - osKernel
-            - osName
-            - systemCPUUsage
-            - systemMemoryFree
-            - systemMemoryTotal
-            - version
             type: object
+        required:
+        - hostId
         type: object
     served: true
     storage: true

@@ -1,10 +1,12 @@
 package runtime_operator
 
+// This will be moved to github.com/cosmonic-labs/runtime-operator/operator.go
+
 import (
+	"context"
 	"time"
 
-	runtimecontroller "github.com/cosmonic-labs/runtime-operator/internal/controller/runtime"
-	"github.com/cosmonic-labs/runtime-operator/pkg/lattice"
+	runtime_controllers "github.com/cosmonic-labs/runtime-operator/internal/controller/runtime"
 	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
 	"github.com/nats-io/nats.go"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -32,96 +34,19 @@ type EmbeddedOperatorConfig struct {
 // It allows embedding the Runtime Operator into other applications.
 type EmbeddedOperator struct {
 	Bus      wasmbus.Bus
-	Dispatch lattice.Dispatch
+	NatsConn *nats.Conn
 }
 
 // NewEmbeddedOperator creates a new EmbeddedOperator.
-func NewEmbeddedOperator(mgr manager.Manager, cfg EmbeddedOperatorConfig) (*EmbeddedOperator, error) {
+func NewEmbeddedOperator(ctx context.Context, mgr manager.Manager, cfg EmbeddedOperatorConfig) (*EmbeddedOperator, error) {
 	nc, err := wasmbus.NatsConnect(cfg.NatsURL, cfg.NatsOptions...)
 	if err != nil {
 		return nil, err
 	}
 	bus := wasmbus.NewNatsBus(nc)
 
-	hostHeartbeats := make(chan string, 100)
-	dispatch := lattice.NewDispatch(bus, cfg.HeartbeatTTL, func(hostID string) {
-		select {
-		case hostHeartbeats <- hostID:
-		default:
-		}
-	})
-
-	if mgr.Add(dispatch) != nil {
-		return nil, err
-	}
-
-	crdIndexer := &lattice.Indexer{
-		Client:       mgr.GetClient(),
-		FieldIndexer: mgr.GetFieldIndexer(),
-	}
-	if err := mgr.Add(crdIndexer); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.HostReconciler{
-		Client:                      mgr.GetClient(),
-		Scheme:                      mgr.GetScheme(),
-		Dispatch:                    dispatch,
-		HostHeartbeats:              hostHeartbeats,
-		CPUBackpressureThreshold:    cfg.HostCPUThreshold,
-		MemoryBackpressureThreshold: cfg.HostMemoryThreshold,
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.ConfigReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.ComponentReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.ComponentReplicaReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.ProviderReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.ProviderReplicaReconciler{
-		Client:   mgr.GetClient(),
-		Scheme:   mgr.GetScheme(),
-		Dispatch: dispatch,
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
-	if err = (&runtimecontroller.LinkReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return nil, err
-	}
-
 	if !cfg.DisableArtifactController {
-		if err = (&runtimecontroller.ArtifactReconciler{
+		if err = (&runtime_controllers.ArtifactReconciler{
 			Client: mgr.GetClient(),
 			Scheme: mgr.GetScheme(),
 		}).SetupWithManager(mgr); err != nil {
@@ -129,8 +54,41 @@ func NewEmbeddedOperator(mgr manager.Manager, cfg EmbeddedOperatorConfig) (*Embe
 		}
 	}
 
+	if err = (&runtime_controllers.HostReconciler{
+		Client:             mgr.GetClient(),
+		Scheme:             mgr.GetScheme(),
+		Bus:                bus,
+		UnreachableTimeout: cfg.HeartbeatTTL,
+		CPUThreshold:       cfg.HostCPUThreshold,
+		MemoryThreshold:    cfg.HostMemoryThreshold,
+	}).SetupWithManager(mgr); err != nil {
+		return nil, err
+	}
+
+	if err = (&runtime_controllers.WorkloadReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+		Bus:    bus,
+	}).SetupWithManager(mgr); err != nil {
+		return nil, err
+	}
+
+	if err = (&runtime_controllers.WorkloadReplicaSetReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return nil, err
+	}
+
+	if err = (&runtime_controllers.WorkloadDeploymentReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return nil, err
+	}
+
 	return &EmbeddedOperator{
-		Dispatch: dispatch,
 		Bus:      bus,
+		NatsConn: nc,
 	}, nil
 }
