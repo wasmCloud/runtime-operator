@@ -38,7 +38,11 @@ type EmbeddedOperator struct {
 }
 
 // NewEmbeddedOperator creates a new EmbeddedOperator.
-func NewEmbeddedOperator(ctx context.Context, mgr manager.Manager, cfg EmbeddedOperatorConfig) (*EmbeddedOperator, error) {
+func NewEmbeddedOperator(
+	ctx context.Context,
+	mgr manager.Manager,
+	cfg EmbeddedOperatorConfig,
+) (*EmbeddedOperator, error) {
 	nc, err := wasmbus.NatsConnect(cfg.NatsURL, cfg.NatsOptions...)
 	if err != nil {
 		return nil, err
