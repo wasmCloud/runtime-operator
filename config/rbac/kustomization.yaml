@@ -5,7 +5,6 @@ resources:
 # runtime. Be sure to update RoleBinding and ClusterRoleBinding
 # subjects if changing service account names.
 - service_account.yaml
-- host_service_account.yaml
 - role.yaml
 - role_binding.yaml
 - leader_election_role.yaml
@@ -19,39 +18,23 @@ resources:
 - metrics_auth_role.yaml
 - metrics_auth_role_binding.yaml
 - metrics_reader_role.yaml
-# For each CRD, "Editor" and "Viewer" roles are scaffolded by
-# default, aiding admins in cluster management. Those roles are
-# not used by the Project itself. You can comment the following lines
-# if you do not want those helpers be installed with your Project.
-- runtime_host_admin_role.yaml
-- runtime_host_editor_role.yaml
-- runtime_host_viewer_role.yaml
-- runtime_cluster_admin_role.yaml
-- runtime_cluster_editor_role.yaml
-- runtime_cluster_viewer_role.yaml
-- runtime_providerreplica_admin_role.yaml
-- runtime_providerreplica_editor_role.yaml
-- runtime_providerreplica_viewer_role.yaml
-- runtime_provider_admin_role.yaml
-- runtime_provider_editor_role.yaml
-- runtime_provider_viewer_role.yaml
-- runtime_componentreplica_admin_role.yaml
-- runtime_componentreplica_editor_role.yaml
-- runtime_componentreplica_viewer_role.yaml
-- runtime_component_admin_role.yaml
-- runtime_component_editor_role.yaml
-- runtime_component_viewer_role.yaml
-- runtime_config_admin_role.yaml
-- runtime_config_editor_role.yaml
-- runtime_config_viewer_role.yaml
-
 # For each CRD, "Admin", "Editor" and "Viewer" roles are scaffolded by
 # default, aiding admins in cluster management. Those roles are
 # not used by the {{ .ProjectName }} itself. You can comment the following lines
 # if you do not want those helpers be installed with your Project.
+- runtime_workloaddeployment_admin_role.yaml
+- runtime_workloaddeployment_editor_role.yaml
+- runtime_workloaddeployment_viewer_role.yaml
+- runtime_workloadreplicaset_admin_role.yaml
+- runtime_workloadreplicaset_editor_role.yaml
+- runtime_workloadreplicaset_viewer_role.yaml
+- runtime_workload_admin_role.yaml
+- runtime_workload_editor_role.yaml
+- runtime_workload_viewer_role.yaml
 - runtime_artifact_admin_role.yaml
 - runtime_artifact_editor_role.yaml
 - runtime_artifact_viewer_role.yaml
-- runtime_link_admin_role.yaml
-- runtime_link_editor_role.yaml
-- runtime_link_viewer_role.yaml
+- runtime_host_admin_role.yaml
+- runtime_host_editor_role.yaml
+- runtime_host_viewer_role.yaml
+

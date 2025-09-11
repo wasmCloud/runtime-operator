@@ -11,12 +11,12 @@ metadata:
   labels:
     app.kubernetes.io/name: ru
     app.kubernetes.io/managed-by: kustomize
-  name: runtime-artifact-editor-role
+  name: runtime-workloadreplicaset-editor-role
 rules:
 - apiGroups:
   - runtime.wasmcloud.dev
   resources:
-  - artifacts
+  - workloadreplicasets
   verbs:
   - create
   - delete
@@ -28,6 +28,6 @@ rules:
 - apiGroups:
   - runtime.wasmcloud.dev
   resources:
-  - artifacts/status
+  - workloadreplicasets/status
   verbs:
   - get

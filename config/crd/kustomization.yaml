@@ -3,13 +3,10 @@
 # It should be run by config/default
 resources:
 - bases/runtime.wasmcloud.dev_hosts.yaml
-- bases/runtime.wasmcloud.dev_configs.yaml
-- bases/runtime.wasmcloud.dev_components.yaml
-- bases/runtime.wasmcloud.dev_componentreplicas.yaml
-- bases/runtime.wasmcloud.dev_providers.yaml
-- bases/runtime.wasmcloud.dev_providerreplicas.yaml
-- bases/runtime.wasmcloud.dev_links.yaml
 - bases/runtime.wasmcloud.dev_artifacts.yaml
+- bases/runtime.wasmcloud.dev_workloads.yaml
+- bases/runtime.wasmcloud.dev_workloadreplicasets.yaml
+- bases/runtime.wasmcloud.dev_workloaddeployments.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:

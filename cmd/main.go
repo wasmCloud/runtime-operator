@@ -191,7 +191,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = runtime_operator.NewEmbeddedOperator(mgr, operatorCfg)
+	ctx := ctrl.SetupSignalHandler()
+
+	_, err = runtime_operator.NewEmbeddedOperator(ctx, mgr, operatorCfg)
 	if err != nil {
 		setupLog.Error(err, "unable to create runtime operator")
 		os.Exit(1)
@@ -209,7 +211,7 @@ func main() {
 	}
 
 	setupLog.Info("starting manager")
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+	if err := mgr.Start(ctx); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
