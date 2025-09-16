@@ -133,7 +133,7 @@ func (h *hostStatusUpdater) Start(ctx context.Context) error {
 				Labels: req.GetLabels(),
 			},
 			HostID:   req.Id,
-			Hostname: "127.0.0.1",
+			Hostname: req.Hostname,
 			HTTPPort: 9191,
 		}
 		_, err := controllerutil.CreateOrUpdate(ctx, h.client, host, func() error {
