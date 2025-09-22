@@ -11,7 +11,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/cosmonic-labs/runtime-operator/api/condition"
-	"github.com/cosmonic-labs/runtime-operator/pkg/crdtools"
 	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
 
 	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
@@ -150,7 +149,7 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 		witWorld.HostInterfaces = append(witWorld.HostInterfaces, &runtimev2.WitInterface{
 			Namespace:  hi.Namespace,
 			Package:    hi.Package,
-			Version:    crdtools.Coalesce(hi.Version, "*"),
+			Version:    hi.Version,
 			Interfaces: hi.Interfaces,
 			Config:     hiConfig,
 		})
