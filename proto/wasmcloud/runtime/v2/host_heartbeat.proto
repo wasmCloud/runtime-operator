@@ -25,7 +25,7 @@ message HostHeartbeat {
   uint64 system_memory_free = 12;
 
   uint64 component_count = 13;
-  uint64 provider_count = 14;
+  uint64 workload_count = 14;
 
   // new stuff
   repeated WitInterface imports = 15;

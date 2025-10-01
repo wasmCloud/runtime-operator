@@ -256,6 +256,10 @@
                 </li>
               
                 <li>
+                  <a href="#wasmcloud.runtime.v2.LocalResources.EnvironmentEntry"><span class="badge">M</span>LocalResources.EnvironmentEntry</a>
+                </li>
+              
+                <li>
                   <a href="#wasmcloud.runtime.v2.Service"><span class="badge">M</span>Service</a>
                 </li>
               
@@ -543,7 +547,7 @@
                 </tr>
               
                 <tr>
-                  <td>provider_count</td>
+                  <td>workload_count</td>
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
                   <td><p> </p></td>
@@ -777,7 +781,14 @@ This information is used by the Runtime Operator to monitor the health of the Wa
                   <td>config</td>
                   <td><a href="#wasmcloud.runtime.v2.LocalResources.ConfigEntry">LocalResources.ConfigEntry</a></td>
                   <td>repeated</td>
-                  <td><p>A Generic key/value map for wasi:config &amp; wasi:cli/env, depending on the workload type </p></td>
+                  <td><p>A Generic key/value map for low level component configuration. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>environment</td>
+                  <td><a href="#wasmcloud.runtime.v2.LocalResources.EnvironmentEntry">LocalResources.EnvironmentEntry</a></td>
+                  <td>repeated</td>
+                  <td><p>Environment variables for the component, mapped to wasi:cli/env. </p></td>
                 </tr>
               
                 <tr>
@@ -805,6 +816,37 @@ Upon a successful lookup, the host will allow outbound connections to the specif
         
       
         <h3 id="wasmcloud.runtime.v2.LocalResources.ConfigEntry">LocalResources.ConfigEntry</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>key</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>value</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="wasmcloud.runtime.v2.LocalResources.EnvironmentEntry">LocalResources.EnvironmentEntry</h3>
         <p></p>
 
         

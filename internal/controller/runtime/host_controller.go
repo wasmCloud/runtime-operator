@@ -3,6 +3,7 @@ package runtime
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"google.golang.org/protobuf/encoding/protojson"
@@ -45,12 +46,23 @@ func (r *HostReconciler) reconcileReporting(ctx context.Context, host *runtimev1
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	_, err := client.Heartbeat(ctx)
+	heartbeat, err := client.Heartbeat(ctx)
 	if err != nil {
 		return err
 	}
 
 	condition.ForceStatusUpdate(ctx)
+
+	host.Status.SystemCPUUsage = strconv.FormatFloat(float64(heartbeat.GetSystemCpuUsage()), 'f', -1, 32)
+	host.Status.SystemMemoryTotal = int64(heartbeat.GetSystemMemoryTotal())
+	host.Status.SystemMemoryFree = int64(heartbeat.GetSystemMemoryFree())
+	host.Status.ComponentCount = int(heartbeat.GetComponentCount())
+	host.Status.WorkloadCount = int(heartbeat.GetWorkloadCount())
+	host.Status.OSName = heartbeat.GetOsName()
+	host.Status.OSArch = heartbeat.GetOsArch()
+	host.Status.OSKernel = heartbeat.GetOsKernel()
+	host.Status.Version = heartbeat.GetVersion()
+
 	host.Status.LastSeen = metav1.Now()
 	return nil
 }

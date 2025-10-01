@@ -12,7 +12,18 @@ const (
 // HostStatus defines the observed state of Host.
 type HostStatus struct {
 	condition.ConditionedStatus `json:",inline"`
-	LastSeen                    metav1.Time `json:"lastSeen,omitempty"`
+
+	Version           string `json:"version"`
+	OSName            string `json:"osName"`
+	OSArch            string `json:"osArch"`
+	OSKernel          string `json:"osKernel"`
+	SystemCPUUsage    string `json:"systemCPUUsage"`
+	SystemMemoryTotal int64  `json:"systemMemoryTotal"`
+	SystemMemoryFree  int64  `json:"systemMemoryFree"`
+	ComponentCount    int    `json:"componentCount,omitempty"`
+	WorkloadCount     int    `json:"workloadCount,omitempty"`
+
+	LastSeen metav1.Time `json:"lastSeen,omitempty"`
 }
 
 // +kubebuilder:object:root=true
