@@ -15,7 +15,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/go-cmp v0.7.0
 	github.com/nats-io/nats-server/v2 v2.11.9
-	github.com/nats-io/nats.go v1.45.0
+	github.com/nats-io/nats.go v1.46.1
 	github.com/onsi/ginkgo/v2 v2.25.3
 	github.com/onsi/gomega v1.38.2
 	github.com/pkg/errors v0.9.1
