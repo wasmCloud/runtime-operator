@@ -101,58 +101,58 @@ spec:
                                 config:
                                   additionalProperties:
                                     type: string
-                                  description: |-
-                                    Config is a simple key/value map that will be provided to the workload as wasi:cli
-                                    or wasi:config, depending on the workload type.
-                                    Overrides any config provided via ConfigFrom or SecretFrom.
                                   type: object
-                                configFrom:
-                                  description: |-
-                                    ConfigFrom is a list of references to ConfigMaps that will be provided to the workload as wasi:cli
-                                    or wasi:config, depending on the workload type.
-                                    The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
-                                    the last ConfigMap in the list wins.
-                                  items:
-                                    description: |-
-                                      LocalObjectReference contains enough information to let you locate the
-                                      referenced object inside the same namespace.
-                                    properties:
-                                      name:
-                                        default: ""
-                                        description: |-
-                                          Name of the referent.
-                                          This field is effectively required, but due to backwards compatibility is
-                                          allowed to be empty. Instances of this type with an empty value here are
-                                          almost certainly wrong.
-                                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                environment:
+                                  properties:
+                                    config:
+                                      additionalProperties:
                                         type: string
-                                    type: object
-                                    x-kubernetes-map-type: atomic
-                                  type: array
-                                secretFrom:
-                                  description: |-
-                                    SecretFrom is a list of references to Secrets that will be provided to the workload as wasi:cli
-                                    or wasi:config, depending on the workload type.
-                                    The keys and values of all referenced Secrets will be merged. In case of key conflicts,
-                                    the last Secret in the list wins.
-                                    The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
-                                  items:
-                                    description: |-
-                                      LocalObjectReference contains enough information to let you locate the
-                                      referenced object inside the same namespace.
-                                    properties:
-                                      name:
-                                        default: ""
+                                      type: object
+                                    configFrom:
+                                      description: |-
+                                        ConfigFrom is a list of references to ConfigMaps that will be provided to the workload.
+                                        The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
+                                        the last ConfigMap in the list wins.
+                                      items:
                                         description: |-
-                                          Name of the referent.
-                                          This field is effectively required, but due to backwards compatibility is
-                                          allowed to be empty. Instances of this type with an empty value here are
-                                          almost certainly wrong.
-                                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                        type: string
-                                    type: object
-                                    x-kubernetes-map-type: atomic
-                                  type: array
+                                          LocalObjectReference contains enough information to let you locate the
+                                          referenced object inside the same namespace.
+                                        properties:
+                                          name:
+                                            default: ""
+                                            description: |-
+                                              Name of the referent.
+                                              This field is effectively required, but due to backwards compatibility is
+                                              allowed to be empty. Instances of this type with an empty value here are
+                                              almost certainly wrong.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            type: string
+                                        type: object
+                                        x-kubernetes-map-type: atomic
+                                      type: array
+                                    secretFrom:
+                                      description: |-
+                                        The keys and values of all referenced Secrets will be merged. In case of key conflicts,
+                                        the last Secret in the list wins.
+                                        The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
+                                      items:
+                                        description: |-
+                                          LocalObjectReference contains enough information to let you locate the
+                                          referenced object inside the same namespace.
+                                        properties:
+                                          name:
+                                            default: ""
+                                            description: |-
+                                              Name of the referent.
+                                              This field is effectively required, but due to backwards compatibility is
+                                              allowed to be empty. Instances of this type with an empty value here are
+                                              almost certainly wrong.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                            type: string
+                                        type: object
+                                        x-kubernetes-map-type: atomic
+                                      type: array
+                                  type: object
                                 volumeMounts:
                                   description: |-
                                     VolumeMounts is a list of volume mounts that will be mounted into the workload component.
@@ -200,6 +200,10 @@ spec:
                                 type: string
                               type: object
                             configFrom:
+                              description: |-
+                                ConfigFrom is a list of references to ConfigMaps that will be provided to the workload.
+                                The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
+                                the last ConfigMap in the list wins.
                               items:
                                 description: |-
                                   LocalObjectReference contains enough information to let you locate the
@@ -227,6 +231,10 @@ spec:
                             package:
                               type: string
                             secretFrom:
+                              description: |-
+                                The keys and values of all referenced Secrets will be merged. In case of key conflicts,
+                                the last Secret in the list wins.
+                                The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
                               items:
                                 description: |-
                                   LocalObjectReference contains enough information to let you locate the
@@ -294,58 +302,58 @@ spec:
                               config:
                                 additionalProperties:
                                   type: string
-                                description: |-
-                                  Config is a simple key/value map that will be provided to the workload as wasi:cli
-                                  or wasi:config, depending on the workload type.
-                                  Overrides any config provided via ConfigFrom or SecretFrom.
                                 type: object
-                              configFrom:
-                                description: |-
-                                  ConfigFrom is a list of references to ConfigMaps that will be provided to the workload as wasi:cli
-                                  or wasi:config, depending on the workload type.
-                                  The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
-                                  the last ConfigMap in the list wins.
-                                items:
-                                  description: |-
-                                    LocalObjectReference contains enough information to let you locate the
-                                    referenced object inside the same namespace.
-                                  properties:
-                                    name:
-                                      default: ""
-                                      description: |-
-                                        Name of the referent.
-                                        This field is effectively required, but due to backwards compatibility is
-                                        allowed to be empty. Instances of this type with an empty value here are
-                                        almost certainly wrong.
-                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                              environment:
+                                properties:
+                                  config:
+                                    additionalProperties:
                                       type: string
-                                  type: object
-                                  x-kubernetes-map-type: atomic
-                                type: array
-                              secretFrom:
-                                description: |-
-                                  SecretFrom is a list of references to Secrets that will be provided to the workload as wasi:cli
-                                  or wasi:config, depending on the workload type.
-                                  The keys and values of all referenced Secrets will be merged. In case of key conflicts,
-                                  the last Secret in the list wins.
-                                  The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
-                                items:
-                                  description: |-
-                                    LocalObjectReference contains enough information to let you locate the
-                                    referenced object inside the same namespace.
-                                  properties:
-                                    name:
-                                      default: ""
+                                    type: object
+                                  configFrom:
+                                    description: |-
+                                      ConfigFrom is a list of references to ConfigMaps that will be provided to the workload.
+                                      The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
+                                      the last ConfigMap in the list wins.
+                                    items:
                                       description: |-
-                                        Name of the referent.
-                                        This field is effectively required, but due to backwards compatibility is
-                                        allowed to be empty. Instances of this type with an empty value here are
-                                        almost certainly wrong.
-                                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                                      type: string
-                                  type: object
-                                  x-kubernetes-map-type: atomic
-                                type: array
+                                        LocalObjectReference contains enough information to let you locate the
+                                        referenced object inside the same namespace.
+                                      properties:
+                                        name:
+                                          default: ""
+                                          description: |-
+                                            Name of the referent.
+                                            This field is effectively required, but due to backwards compatibility is
+                                            allowed to be empty. Instances of this type with an empty value here are
+                                            almost certainly wrong.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          type: string
+                                      type: object
+                                      x-kubernetes-map-type: atomic
+                                    type: array
+                                  secretFrom:
+                                    description: |-
+                                      The keys and values of all referenced Secrets will be merged. In case of key conflicts,
+                                      the last Secret in the list wins.
+                                      The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
+                                    items:
+                                      description: |-
+                                        LocalObjectReference contains enough information to let you locate the
+                                        referenced object inside the same namespace.
+                                      properties:
+                                        name:
+                                          default: ""
+                                          description: |-
+                                            Name of the referent.
+                                            This field is effectively required, but due to backwards compatibility is
+                                            allowed to be empty. Instances of this type with an empty value here are
+                                            almost certainly wrong.
+                                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                          type: string
+                                      type: object
+                                      x-kubernetes-map-type: atomic
+                                    type: array
+                                type: object
                               volumeMounts:
                                 description: |-
                                   VolumeMounts is a list of volume mounts that will be mounted into the workload component.

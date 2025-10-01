@@ -46,6 +46,22 @@ type VolumeMount struct {
 	MountPath string `json:"mountPath"`
 }
 
+type ConfigLayer struct {
+	// +kubebuilder:validation:Optional
+	// ConfigFrom is a list of references to ConfigMaps that will be provided to the workload.
+	// The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
+	// the last ConfigMap in the list wins.
+	// +kubebuilder:validation:Optional
+	ConfigFrom []corev1.LocalObjectReference `json:"configFrom,omitempty"`
+	// The keys and values of all referenced Secrets will be merged. In case of key conflicts,
+	// the last Secret in the list wins.
+	// The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
+	// +kubebuilder:validation:Optional
+	SecretFrom []corev1.LocalObjectReference `json:"secretFrom,omitempty"`
+	// +kubebuilder:validation:Optional
+	Config map[string]string `json:"config,omitempty"`
+}
+
 // LocalResources describes resources that will be made available to a workload component.
 type LocalResources struct {
 	// VolumeMounts is a list of volume mounts that will be mounted into the workload component.
@@ -53,22 +69,7 @@ type LocalResources struct {
 	// +kubebuilder:validation:Optional
 	VolumeMounts []VolumeMount `json:"volumeMounts,omitempty"`
 	// +kubebuilder:validation:Optional
-	// SecretFrom is a list of references to Secrets that will be provided to the workload as wasi:cli
-	// or wasi:config, depending on the workload type.
-	// The keys and values of all referenced Secrets will be merged. In case of key conflicts,
-	// the last Secret in the list wins.
-	// The values of the Secrets will be base64-decoded, utf-8 decoded before being provided to the workload.
-	// +kubebuilder:validation:Optional
-	SecretFrom []corev1.LocalObjectReference `json:"secretFrom,omitempty"`
-	// ConfigFrom is a list of references to ConfigMaps that will be provided to the workload as wasi:cli
-	// or wasi:config, depending on the workload type.
-	// The keys and values of all referenced ConfigMaps will be merged. In case of key conflicts,
-	// the last ConfigMap in the list wins.
-	// +kubebuilder:validation:Optional
-	ConfigFrom []corev1.LocalObjectReference `json:"configFrom,omitempty"`
-	// Config is a simple key/value map that will be provided to the workload as wasi:cli
-	// or wasi:config, depending on the workload type.
-	// Overrides any config provided via ConfigFrom or SecretFrom.
+	Environment *ConfigLayer `json:"environment,omitempty"`
 	// +kubebuilder:validation:Optional
 	Config map[string]string `json:"config,omitempty"`
 	// +kubebuilder:validation:Optional
@@ -114,6 +115,9 @@ type WorkloadService struct {
 }
 
 type HostInterface struct {
+	// Provides the config / configmap / secret references for this host interface
+	ConfigLayer `json:",inline"`
+
 	// +kubebuilder:validation:Required
 	Namespace string `json:"namespace"`
 	// +kubebuilder:validation:Required
@@ -123,12 +127,6 @@ type HostInterface struct {
 	Interfaces []string `json:"interfaces,omitempty"`
 	// +kubebuilder:validation:Optional
 	Version string `json:"version,omitempty"`
-	// +kubebuilder:validation:Optional
-	Config map[string]string `json:"config,omitempty"`
-	// +kubebuilder:validation:Optional
-	ConfigFrom []corev1.LocalObjectReference `json:"configFrom,omitempty"`
-	// +kubebuilder:validation:Optional
-	SecretFrom []corev1.LocalObjectReference `json:"secretFrom,omitempty"`
 }
 
 func (h *HostInterface) HasInterface(iface string) bool {

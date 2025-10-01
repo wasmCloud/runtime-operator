@@ -96,50 +96,25 @@ func MergeMaps(maps ...map[string]string) map[string]string {
 	return ret
 }
 
-func MaterializeLocalResourcesConfig(ctx context.Context,
-	kubeClient client.Client, namespace string, localResources *runtimev1alpha1.LocalResources,
+func MaterializeConfigLayer(ctx context.Context,
+	kubeClient client.Client, namespace string, configLayer *runtimev1alpha1.ConfigLayer,
 ) (map[string]string, error) {
 	ret := make(map[string]string)
-	if localResources == nil {
+	if configLayer == nil {
 		return ret, nil
 	}
 
-	ret = MergeMaps(ret, localResources.Config)
+	ret = MergeMaps(ret, configLayer.Config)
 
-	configs, err := ResolveConfigFrom(ctx, kubeClient, namespace, localResources.ConfigFrom)
+	configs, err := ResolveConfigFrom(ctx, kubeClient, namespace, configLayer.ConfigFrom)
 	if err != nil {
 		return nil, fmt.Errorf("resolving local resources config: %w", err)
 	}
 	ret = MergeMaps(ret, configs)
 
-	secrets, err := ResolveSecretFrom(ctx, kubeClient, namespace, localResources.SecretFrom)
+	secrets, err := ResolveSecretFrom(ctx, kubeClient, namespace, configLayer.SecretFrom)
 	if err != nil {
 		return nil, fmt.Errorf("resolving local resources secret: %w", err)
-	}
-	ret = MergeMaps(ret, secrets)
-
-	return ret, nil
-}
-
-func MaterializeHostInterfaceConfig(ctx context.Context,
-	kubeClient client.Client, namespace string, hostInterface *runtimev1alpha1.HostInterface,
-) (map[string]string, error) {
-	ret := make(map[string]string)
-	if hostInterface == nil {
-		return ret, nil
-	}
-
-	ret = MergeMaps(ret, hostInterface.Config)
-
-	configs, err := ResolveConfigFrom(ctx, kubeClient, namespace, hostInterface.ConfigFrom)
-	if err != nil {
-		return nil, fmt.Errorf("resolving host interface config: %w", err)
-	}
-	ret = MergeMaps(ret, configs)
-
-	secrets, err := ResolveSecretFrom(ctx, kubeClient, namespace, hostInterface.SecretFrom)
-	if err != nil {
-		return nil, fmt.Errorf("resolving host interface secret: %w", err)
 	}
 	ret = MergeMaps(ret, secrets)
 

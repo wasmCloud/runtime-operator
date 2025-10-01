@@ -53,6 +53,8 @@ spec:
           status:
             description: HostStatus defines the observed state of Host.
             properties:
+              componentCount:
+                type: integer
               conditions:
                 description: Conditions of the resource.
                 items:
@@ -99,6 +101,32 @@ spec:
               lastSeen:
                 format: date-time
                 type: string
+              osArch:
+                type: string
+              osKernel:
+                type: string
+              osName:
+                type: string
+              systemCPUUsage:
+                type: string
+              systemMemoryFree:
+                format: int64
+                type: integer
+              systemMemoryTotal:
+                format: int64
+                type: integer
+              version:
+                type: string
+              workloadCount:
+                type: integer
+            required:
+            - osArch
+            - osKernel
+            - osName
+            - systemCPUUsage
+            - systemMemoryFree
+            - systemMemoryTotal
+            - version
             type: object
         required:
         - hostId

@@ -44,16 +44,22 @@ func (r *WorkloadReconciler) reconcileConfig(ctx context.Context, workload *runt
 	}
 
 	if workload.Spec.Service != nil {
-		_, err := MaterializeLocalResourcesConfig(ctx, r.Client, workload.Namespace, workload.Spec.Service.LocalResources)
-		if err != nil {
-			return fmt.Errorf("materializing local resources config: %w", err)
+		if workload.Spec.Service.LocalResources.Environment != nil {
+			_, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, workload.Spec.Service.LocalResources.Environment)
+			if err != nil {
+				return fmt.Errorf("materializing local resources config: %w", err)
+			}
 		}
 	}
 
 	for _, c := range workload.Spec.Components {
-		_, err := MaterializeLocalResourcesConfig(ctx, r.Client, workload.Namespace, c.LocalResources)
-		if err != nil {
-			return fmt.Errorf("materializing local resources config for component %q: %w", c.Name, err)
+		if c.LocalResources != nil {
+			if c.LocalResources.Environment != nil {
+				_, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, c.LocalResources.Environment)
+				if err != nil {
+					return fmt.Errorf("materializing local resources config for component %q: %w", c.Name, err)
+				}
+			}
 		}
 	}
 
@@ -142,7 +148,7 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 		Components:     make([]*runtimev2.Component, 0, len(workload.Spec.Components)),
 	}
 	for _, hi := range workload.Spec.HostInterfaces {
-		hiConfig, err := MaterializeHostInterfaceConfig(ctx, r.Client, workload.Namespace, &hi)
+		hiConfig, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, &hi.ConfigLayer)
 		if err != nil {
 			return fmt.Errorf("materializing host interface config for %s/%s: %w", hi.Namespace, hi.Package, err)
 		}
@@ -160,12 +166,15 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 
 		if c.LocalResources != nil {
 			localResources.AllowedHosts = c.LocalResources.AllowedHosts
+			localResources.Config = c.LocalResources.Config
 
-			localConfig, err := MaterializeLocalResourcesConfig(ctx, r.Client, workload.Namespace, c.LocalResources)
-			if err != nil {
-				return fmt.Errorf("materializing local resources config for component %q: %w", c.Name, err)
+			if c.LocalResources.Environment != nil {
+				localEnvironment, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, c.LocalResources.Environment)
+				if err != nil {
+					return fmt.Errorf("materializing local resources config for component %q: %w", c.Name, err)
+				}
+				localResources.Environment = localEnvironment
 			}
-			localResources.Config = localConfig
 		}
 
 		witWorld.Components = append(witWorld.Components, &runtimev2.Component{
@@ -182,12 +191,15 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 
 		if s.LocalResources != nil {
 			localResources.AllowedHosts = s.LocalResources.AllowedHosts
+			localResources.Config = s.LocalResources.Config
 
-			localConfig, err := MaterializeLocalResourcesConfig(ctx, r.Client, workload.Namespace, s.LocalResources)
-			if err != nil {
-				return fmt.Errorf("materializing local resources config for service: %w", err)
+			if s.LocalResources.Environment != nil {
+				localEnvironment, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, s.LocalResources.Environment)
+				if err != nil {
+					return fmt.Errorf("materializing local resources config for service: %w", err)
+				}
+				localResources.Environment = localEnvironment
 			}
-			localResources.Config = localConfig
 		}
 
 		service = &runtimev2.Service{
