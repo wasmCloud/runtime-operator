@@ -19,6 +19,7 @@ import (
 
 const (
 	workloadReplicaSetReconcileInterval    = 1 * time.Minute
+	workloadReplicaSetReplicaGracePeriod   = 1 * time.Minute
 	workloadReplicaSetNameIndex            = "workload.replicaset.name"
 	workloadReplicaSetHashIndex            = "workload.replicaset.hash"
 	workloadReplicaSetGenerationAnnotation = "runtime.wasmcloud.dev/workload-replica-set-generation"
@@ -164,6 +165,96 @@ func (r *WorkloadReplicaSetReconciler) reconcileReady(ctx context.Context, repli
 	return nil
 }
 
+func (r *WorkloadReplicaSetReconciler) reconcileCleanup(ctx context.Context, replicaSet *runtimev1alpha1.WorkloadReplicaSet) error {
+	if !replicaSet.Status.AllTrue(runtimev1alpha1.WorkloadReplicaSetConditionScaleUp, runtimev1alpha1.WorkloadReplicaSetConditionScaleDown) {
+		// wait until scaling is done
+		return nil
+	}
+
+	if err := r.cleanupPreviousRevisionsWorkloads(ctx, replicaSet); err != nil {
+		return err
+	}
+
+	return r.cleanupUnhealthyWorkloads(ctx, replicaSet)
+}
+
+func (r *WorkloadReplicaSetReconciler) cleanupPreviousRevisionsWorkloads(ctx context.Context, replicaSet *runtimev1alpha1.WorkloadReplicaSet) error {
+	workloads := &runtimev1alpha1.WorkloadList{}
+	if err := r.List(
+		ctx,
+		workloads,
+		client.InNamespace(replicaSet.Namespace),
+		client.MatchingFields{
+			workloadReplicaSetNameIndex: replicaSet.Name,
+		},
+	); err != nil {
+		return err
+	}
+
+	currentGeneration := replicaSet.Spec.Template.Hash()
+
+	for _, workload := range workloads.Items {
+		// catches workloads already being deleted
+		if workload.DeletionTimestamp != nil {
+			continue
+		}
+
+		// catches workloads that are of the current generation
+		if generation, ok := workload.Annotations[workloadReplicaSetGenerationAnnotation]; !ok || generation == currentGeneration {
+			continue
+		}
+
+		// At this point, the workload is not of the current generation
+		// and should be cleaned up
+		if err := r.Delete(ctx, &workload); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *WorkloadReplicaSetReconciler) cleanupUnhealthyWorkloads(ctx context.Context, replicaSet *runtimev1alpha1.WorkloadReplicaSet) error {
+	workloads := &runtimev1alpha1.WorkloadList{}
+	if err := r.List(
+		ctx,
+		workloads,
+		client.InNamespace(replicaSet.Namespace),
+		client.MatchingFields{
+			workloadReplicaSetNameIndex: replicaSet.Name,
+			workloadReplicaSetHashIndex: replicaSet.Spec.Template.Hash(),
+		},
+	); err != nil {
+		return err
+	}
+
+	for _, workload := range workloads.Items {
+		// catches workloads already being deleted
+		if workload.DeletionTimestamp != nil {
+			continue
+		}
+		// catches ready workloads
+		if workload.Status.IsAvailable() {
+			continue
+		}
+
+		syncStatus := workload.Status.GetCondition(runtimev1alpha1.WorkloadConditionSync)
+		// catches unknown & true sync status
+		if syncStatus.Status != condition.ConditionFalse {
+			continue
+		}
+		// If the workload has failed recently, give it some time to recover
+		if syncStatus.LastProbeTime.Time.Add(workloadReplicaSetReplicaGracePeriod).After(time.Now()) {
+			continue
+		}
+		// At this point, the workload is not ready, has failed, and has not recovered within the grace period
+		// Delete the workload, which will be replaced by the scale-up logic
+		if err := r.Delete(ctx, &workload); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // SetupWithManager sets up the controller with the Manager.
 // +kubebuilder:rbac:groups=runtime.wasmcloud.dev,resources=workloadreplicasets,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=runtime.wasmcloud.dev,resources=workloadreplicasets/status,verbs=get;update;patch
@@ -179,6 +270,7 @@ func (r *WorkloadReplicaSetReconciler) SetupWithManager(mgr ctrl.Manager) error 
 	reconciler.SetCondition(runtimev1alpha1.WorkloadReplicaSetConditionScaleUp, r.reconcileScaleUp)
 	reconciler.SetCondition(runtimev1alpha1.WorkloadReplicaSetConditionScaleDown, r.reconcileScaleDown)
 	reconciler.SetCondition(condition.TypeReady, r.reconcileReady)
+	reconciler.AddPostHook(r.reconcileCleanup)
 
 	r.reconciler = reconciler
 
