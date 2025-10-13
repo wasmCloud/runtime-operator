@@ -11,7 +11,7 @@ tool (
 )
 
 require (
-	connectrpc.com/connect v1.19.0
+	connectrpc.com/connect v1.19.1
 	github.com/goccy/go-yaml v1.18.0
 	github.com/google/go-cmp v0.7.0
 	github.com/nats-io/nats-server/v2 v2.12.0
