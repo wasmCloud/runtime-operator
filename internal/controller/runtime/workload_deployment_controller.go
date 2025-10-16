@@ -13,9 +13,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/cosmonic-labs/runtime-operator/api/condition"
+	"github.com/wasmCloud/runtime-operator/api/condition"
 
-	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
+	runtimev1alpha1 "github.com/wasmCloud/runtime-operator/api/runtime/v1alpha1"
 )
 
 const (

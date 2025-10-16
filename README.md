@@ -106,15 +106,6 @@ kubectl create secret docker-registry ghcr --docker-server=https://ghcr.io --doc
 
 then use it as imagePullSecret.
 
-## What CRDs does the Operator create?
-
-The operator creates the following resources under `cosmonic.io` group:
-
-- `Cluster`: Represents a wasmCloud Cluster Control Plane
-- `HostGroup`: Represents a set of wasmcloud hosts belonging to a `Cluster`
-- `Component`: A single Component, including configs, links, and secrets
-- `Application`: A set of Components, guaranteed to be scheduled on the same wasmCloud host
-
 ## What permissions does the Operator need on Kubernetes Core Resources?
 
 Full RBAC definition [can be found here](./config/rbac/role.yaml)
@@ -132,7 +123,7 @@ Full RBAC definition [can be found here](./config/rbac/role.yaml)
   - PersistentVolumeClaim
   - Event
 
-### CRUD Operator namespace ( Create Update Delete specifically on `cosmonic-system` )
+### CRUD Operator namespace ( Create Update Delete specifically on `wasmcloud-system` )
 
 - coordination.k8s.io
   - Lease

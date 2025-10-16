@@ -25,7 +25,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/cosmonic-labs/runtime-operator/test/utils"
+	"github.com/wasmCloud/runtime-operator/test/utils"
 )
 
 var (
