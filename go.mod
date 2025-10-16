@@ -1,5 +1,4 @@
-// JAF: change once runtime-operator is moved to wasmCloud
-module github.com/wasmCloud/runtime-operator
+module go.wasmcloud.dev/runtime-operator
 
 go 1.25.0
 

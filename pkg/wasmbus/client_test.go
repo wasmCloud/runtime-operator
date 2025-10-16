@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/wasmCloud/runtime-operator/pkg/wasmbus/wasmbustest"
+	"go.wasmcloud.dev/runtime-operator/pkg/wasmbus/wasmbustest"
 )
 
 type testMessage struct {
