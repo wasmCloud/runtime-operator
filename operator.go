@@ -1,14 +1,14 @@
 package runtime_operator
 
-// This will be moved to github.com/wasmCloud/runtime-operator/operator.go
+// This will be moved to go.wasmcloud.dev/runtime-operator/operator.go
 
 import (
 	"context"
 	"time"
 
 	"github.com/nats-io/nats.go"
-	runtime_controllers "github.com/wasmCloud/runtime-operator/internal/controller/runtime"
-	"github.com/wasmCloud/runtime-operator/pkg/wasmbus"
+	runtime_controllers "go.wasmcloud.dev/runtime-operator/internal/controller/runtime"
+	"go.wasmcloud.dev/runtime-operator/pkg/wasmbus"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
