@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
-	runtimev2 "github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v2"
-	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
+	runtimev1alpha1 "github.com/wasmCloud/runtime-operator/api/runtime/v1alpha1"
+	runtimev2 "github.com/wasmCloud/runtime-operator/pkg/rpc/wasmcloud/runtime/v2"
+	"github.com/wasmCloud/runtime-operator/pkg/wasmbus"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"

@@ -60,7 +60,7 @@ jobs:
   #   secrets: inherit
   #   with:
   #     file: Dockerfile
-  #     image: ghcr.io/cosmonic-labs/runtime-operator
+  #     image: ghcr.io/wasmCloud/runtime-operator
   #     tags: |
   #       type=raw,value=canary
   #
@@ -75,6 +75,6 @@ jobs:
   #   secrets: inherit
   #   with:
   #     file: Dockerfile
-  #     image: ghcr.io/cosmonic-labs/runtime-operator
+  #     image: ghcr.io/wasmCloud/runtime-operator
   #     tags: |
   #       type=semver,pattern={{version}},value=${{ github.ref_name }}

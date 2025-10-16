@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus/wasmbustest"
+	"github.com/wasmCloud/runtime-operator/pkg/wasmbus/wasmbustest"
 )
 
 func TestServerRegisterHandler(t *testing.T) {

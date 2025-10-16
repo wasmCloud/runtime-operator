@@ -10,11 +10,11 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/cosmonic-labs/runtime-operator/api/condition"
-	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus"
+	"github.com/wasmCloud/runtime-operator/api/condition"
+	"github.com/wasmCloud/runtime-operator/pkg/wasmbus"
 
-	runtimev1alpha1 "github.com/cosmonic-labs/runtime-operator/api/runtime/v1alpha1"
-	runtimev2 "github.com/cosmonic-labs/runtime-operator/pkg/rpc/wasmcloud/runtime/v2"
+	runtimev1alpha1 "github.com/wasmCloud/runtime-operator/api/runtime/v1alpha1"
+	runtimev2 "github.com/wasmCloud/runtime-operator/pkg/rpc/wasmcloud/runtime/v2"
 )
 
 const (

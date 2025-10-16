@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/cosmonic-labs/runtime-operator/pkg/wasmbus/wasmbustest"
+	"github.com/wasmCloud/runtime-operator/pkg/wasmbus/wasmbustest"
 )
 
 type testMessage struct {
