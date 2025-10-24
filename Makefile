@@ -108,7 +108,7 @@ runtime-operator:
 .PHONY: docker-build
 docker-build: ## Build docker image with the manager.
 	@echo "Building $(IMG) ..."
-	$(CONTAINER_TOOL) build -t operator/$(IMG) .
+	$(CONTAINER_TOOL) build -t $(IMG) .
 
 .PHONY: docker-push
 docker-push: ## Push docker image with the manager.
