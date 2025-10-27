@@ -10,6 +10,9 @@ Dockerfile.cross
 # Test binary, built with `go test -c`
 *.test
 
+#Helm packages
+*.tgz
+
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
@@ -29,3 +32,6 @@ go.work
 # Temporary directories for 'air'
 tmp/**
 !tmp/.gitkeep
+
+# Junk
+.DS_Store
