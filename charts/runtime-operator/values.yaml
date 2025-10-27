@@ -1,0 +1,58 @@
+global:
+  image:
+    # -- Globally override container image registry, e.g. "ghcr.io"
+    registry: ""
+    # -- Globally override container imagePullSecrets
+    pullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+# -- Values for installing NATS as a subchart. If you prefer to install NATS separately, set `enabled` to `false`.
+nats:
+  enabled: true
+  name: nats
+  service:
+    name: "nats"
+    ports:
+      monitor:
+        enabled: true
+  headlessService:
+    name: "nats-headless"
+  natsBox:
+    enabled: false
+  config:
+    cluster:
+      enabled: true
+      replicas: 3
+    leafnodes:
+      enabled: true
+    monitor:
+      enabled: true
+      port: 8222
+    websocket:
+      enabled: true
+      port: 4223
+    jetstream:
+      enabled: true
+      merge:
+        domain: default
+
+operator:
+  image:
+    registry: ghcr.io
+    repository: wasmcloud/runtime-operator
+    pull_policy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  service:
+    type: ClusterIP
+    port: 8443
+  # -- This section builds out the service account.
+  # See the [Kubernetes documentation](https://kubernetes.io/docs/concepts/security/service-accounts/).
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: true
+    # -- Automatically mount a ServiceAccount's API credentials?
+    automountServiceAccountToken: true
+    # -- Annotations to add to the service account
+    annotations: {}
