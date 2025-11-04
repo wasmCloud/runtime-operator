@@ -7,35 +7,19 @@ global:
   nameOverride: ""
   fullnameOverride: ""
 
-# -- Values for installing NATS as a subchart. If you prefer to install NATS separately, set `enabled` to `false`.
+# -- Values for installing a basic NATS Server with Ephemeral Storage. If you prefer to install NATS separately, set `enabled` to `false`.
 nats:
   enabled: true
-  name: nats
-  service:
-    name: "nats"
-    ports:
-      monitor:
-        enabled: true
-  headlessService:
-    name: "nats-headless"
-  natsBox:
-    enabled: false
-  config:
-    cluster:
-      enabled: true
-      replicas: 3
-    leafnodes:
-      enabled: true
-    monitor:
-      enabled: true
-      port: 8222
-    websocket:
-      enabled: true
-      port: 4223
-    jetstream:
-      enabled: true
-      merge:
-        domain: default
+  image:
+    registry: docker.io
+    repository: nats
+    pull_policy: Always
+    tag: "2.11.3-alpine"
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: true
+    # -- Annotations to add to the service account
+    annotations: {}
 
 operator:
   image:
@@ -52,7 +36,32 @@ operator:
   serviceAccount:
     # -- Specifies whether a service account should be created
     create: true
-    # -- Automatically mount a ServiceAccount's API credentials?
-    automountServiceAccountToken: true
     # -- Annotations to add to the service account
     annotations: {}
+
+runtime:
+  serviceAccount:
+    # -- Specifies whether a service account should be created
+    create: true
+    # -- Annotations to add to the service account
+    annotations: {}
+  image:
+    registry: ghcr.io
+    repository: wasmcloud/wash-host
+    pull_policy: Always
+    tag: "canary"
+  hostGroups:
+    - name: default
+      replicas: 1
+      service:
+        type: ClusterIP
+      http:
+        enabled: true
+        port: 80
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m" # 0.25 CPU cores
+        limits:
+          memory: "512Mi"
+          cpu: "500m" # 0.5 CPU cores

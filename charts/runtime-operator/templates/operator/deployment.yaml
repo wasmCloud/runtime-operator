@@ -24,7 +24,7 @@ spec:
         - name: runtime-operator
           image: {{ printf "%s/%s" $registry .Values.operator.image.repository }}:{{ .Values.operator.image.tag | default .Chart.AppVersion }}
           args:
-            - "-nats-url=nats://nats.default.svc.cluster.local:4222"
+            - "-nats-url=nats://nats:4222"
           imagePullPolicy: {{ .Values.operator.image.pull_policy }}
           securityContext:
             capabilities:
