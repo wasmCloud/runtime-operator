@@ -29,8 +29,10 @@ spec:
         - name: host
           image: {{ printf "%s/%s" $registry $top.Values.runtime.image.repository }}:{{ $top.Values.runtime.image.tag | default $top.Chart.AppVersion }}
           args:
+            - "host"
             - "--host-group={{ .name }}"
-            - "--nats-url=nats://nats:4222"
+            - "--scheduler-nats-url=nats://nats:4222"
+            - "--data-nats-url=nats://nats:4222"
             {{- if and (.http) (.http.enabled) }}
             - "--http-addr=0.0.0.0:9191"
             {{- end }}

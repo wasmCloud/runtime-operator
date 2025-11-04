@@ -1,4 +1,7 @@
 runtime:
+  image:
+    repository: cosmonic-labs/wash-host
+    tag: "canary"
   hostGroups:
     - name: public-ingress
       replicas: 1
