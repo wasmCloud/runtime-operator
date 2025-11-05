@@ -18,9 +18,15 @@ spec:
     - jsonPath: .hostId
       name: HOSTID
       type: string
+    - jsonPath: .metadata.labels.hostgroup
+      name: HOSTGROUP
+      type: string
     - jsonPath: .status.conditions[?(@.type=="Ready")].status
       name: READY
       type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
     name: v1alpha1
     schema:
       openAPIV3Schema:

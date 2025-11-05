@@ -30,7 +30,9 @@ type HostStatus struct {
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster
 // +kubebuilder:printcolumn:name="HOSTID",type=string,JSONPath=`.hostId`
+// +kubebuilder:printcolumn:name="HOSTGROUP",type=string,JSONPath=`.metadata.labels.hostgroup`
 // +kubebuilder:printcolumn:name="READY",type=string,JSONPath=`.status.conditions[?(@.type=="Ready")].status`
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 
 // Host is the Schema for the Hosts API.
 type Host struct {

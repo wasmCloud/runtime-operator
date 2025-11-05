@@ -196,6 +196,7 @@ type WorkloadStatus struct {
 // +kubebuilder:resource:shortName=ww
 // +kubebuilder:printcolumn:name="HOSTID",type=string,JSONPath=".status.hostId"
 // +kubebuilder:printcolumn:name="READY",type=string,JSONPath=`.status.conditions[?(@.type=="Ready")].status`
+// +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 
 // Workload is the Schema for the artifacts API.
 type Workload struct {
