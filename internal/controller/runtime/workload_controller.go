@@ -44,7 +44,7 @@ func (r *WorkloadReconciler) reconcileConfig(ctx context.Context, workload *runt
 	}
 
 	if workload.Spec.Service != nil {
-		if workload.Spec.Service.LocalResources.Environment != nil {
+		if workload.Spec.Service.LocalResources != nil {
 			_, err := MaterializeConfigLayer(ctx, r.Client, workload.Namespace, workload.Spec.Service.LocalResources.Environment)
 			if err != nil {
 				return fmt.Errorf("materializing local resources config: %w", err)
