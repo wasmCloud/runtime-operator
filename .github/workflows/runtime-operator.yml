@@ -60,6 +60,7 @@ jobs:
     with:
       file: Dockerfile
       image: ghcr.io/wasmcloud/runtime-operator
+      push: true
       tags: |
         type=raw,value=canary
 
@@ -74,5 +75,6 @@ jobs:
     with:
       file: Dockerfile
       image: ghcr.io/wasmcloud/runtime-operator
+      push: true
       tags: |
         type=semver,pattern={{version}},value=${{ github.ref_name }}
