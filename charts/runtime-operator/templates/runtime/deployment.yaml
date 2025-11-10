@@ -36,6 +36,9 @@ spec:
             {{- if and (.http) (.http.enabled) }}
             - "--http-addr=0.0.0.0:9191"
             {{- end }}
+            {{- if and (.webgpu) (.webgpu.enabled) }}
+            - "--wasi-webgpu"
+            {{- end }}
           imagePullPolicy: {{ $top.Values.runtime.image.pull_policy }}
           {{- with .resources }}
           resources:

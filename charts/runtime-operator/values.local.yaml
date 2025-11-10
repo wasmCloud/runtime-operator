@@ -1,12 +1,11 @@
 runtime:
-  image:
-    repository: cosmonic-labs/wash-host
-    tag: "canary"
   hostGroups:
     - name: public-ingress
       replicas: 1
       service:
         type: NodePort
+      webgpu:
+        enabled: true
       http:
         enabled: true
         port: 80
