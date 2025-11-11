@@ -134,6 +134,6 @@ message HostPathVolume {
 // Always use TLS/encryption for all network communication to protect these credentials.
 //
 message ImagePullSecret {
-    string username = 1;
-    string password = 2;
+  string username = 1;
+  string password = 2;
 }
