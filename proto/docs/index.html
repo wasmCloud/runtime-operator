@@ -248,6 +248,10 @@
                 </li>
               
                 <li>
+                  <a href="#wasmcloud.runtime.v2.ImagePullSecret"><span class="badge">M</span>ImagePullSecret</a>
+                </li>
+              
+                <li>
                   <a href="#wasmcloud.runtime.v2.LocalResources"><span class="badge">M</span>LocalResources</a>
                 </li>
               
@@ -715,6 +719,13 @@ This information is used by the Runtime Operator to monitor the health of the Wa
                   <td><p> </p></td>
                 </tr>
               
+                <tr>
+                  <td>image_pull_secret</td>
+                  <td><a href="#wasmcloud.runtime.v2.ImagePullSecret">ImagePullSecret</a></td>
+                  <td></td>
+                  <td><p>Optional credentials for pulling the image from a private registry </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -741,6 +752,37 @@ This information is used by the Runtime Operator to monitor the health of the Wa
               
                 <tr>
                   <td>local_path</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="wasmcloud.runtime.v2.ImagePullSecret">ImagePullSecret</h3>
+        <p>Credentials for pulling images from private OCI registries</p><p>⚠️ SECURITY NOTE:</p><p>Credentials are transmitted as plain text in protobuf messages.</p><p>Always use TLS/encryption for all network communication to protect these credentials.</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>username</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>password</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
@@ -906,6 +948,13 @@ Upon a successful lookup, the host will allow outbound connections to the specif
                   <td><a href="#uint64">uint64</a></td>
                   <td></td>
                   <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>image_pull_secret</td>
+                  <td><a href="#wasmcloud.runtime.v2.ImagePullSecret">ImagePullSecret</a></td>
+                  <td></td>
+                  <td><p>Optional credentials for pulling the image from a private registry </p></td>
                 </tr>
               
             </tbody>

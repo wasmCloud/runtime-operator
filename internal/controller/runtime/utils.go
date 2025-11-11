@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/distribution/reference"
+	"github.com/docker/cli/cli/config/configfile"
 	runtimev1alpha1 "go.wasmcloud.dev/runtime-operator/api/runtime/v1alpha1"
 	runtimev2 "go.wasmcloud.dev/runtime-operator/pkg/rpc/wasmcloud/runtime/v2"
 	"go.wasmcloud.dev/runtime-operator/pkg/wasmbus"
@@ -94,6 +96,55 @@ func MergeMaps(maps ...map[string]string) map[string]string {
 	}
 
 	return ret
+}
+
+func MaterializeImagePullSecret(ctx context.Context,
+	kubeClient client.Client,
+	namespace string,
+	name string,
+	image string,
+) (*runtimev2.ImagePullSecret, error) {
+	var secret corev1.Secret
+	if err := kubeClient.Get(ctx, client.ObjectKey{Namespace: namespace, Name: name}, &secret); err != nil {
+		return nil, err
+	}
+	if secret.Type != corev1.SecretTypeDockerConfigJson {
+		return nil, fmt.Errorf("image pull secret %q is not of type %q", name, corev1.SecretTypeDockerConfigJson)
+	}
+
+	cfg := configfile.New("in-memory")
+	if err := cfg.LoadFromReader(strings.NewReader(string(secret.Data[corev1.DockerConfigJsonKey]))); err != nil {
+		return nil, fmt.Errorf("loading docker config json from secret %q: %w", name, err)
+	}
+
+	// Normalize the image reference to extract the registry domain
+	// ex: "ubuntu:latest" -> "docker.io/ubuntu:latest"
+	registryRef, err := reference.ParseNormalizedNamed(image)
+	if err != nil {
+		return nil, fmt.Errorf("parsing image reference %q: %w", image, err)
+	}
+
+	// extract the domain from the normalized reference
+	// assume the default docker registry if none is specified
+	configKey := getAuthConfigKey(reference.Domain(registryRef))
+	authConfig, err := cfg.GetAuthConfig(configKey)
+	if err != nil {
+		return nil, fmt.Errorf("getting auth config for image %q: %w", image, err)
+	}
+
+	// NOTE(lxf): here we have the opportunity to run credential helpers if needed
+
+	return &runtimev2.ImagePullSecret{
+		Username: authConfig.Username,
+		Password: authConfig.Password,
+	}, nil
+}
+
+func getAuthConfigKey(domainName string) string {
+	if domainName == "docker.io" || domainName == "index.docker.io" {
+		return "https://index.docker.io/v1/"
+	}
+	return domainName
 }
 
 func MaterializeConfigLayer(ctx context.Context,
