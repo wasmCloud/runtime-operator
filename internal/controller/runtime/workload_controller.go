@@ -177,11 +177,21 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 			}
 		}
 
+		var imagePullSecret *runtimev2.ImagePullSecret = nil
+		if c.ImagePullSecret != nil {
+			var err error
+			imagePullSecret, err = MaterializeImagePullSecret(ctx, r.Client, workload.Namespace, c.ImagePullSecret.Name, c.Image)
+			if err != nil {
+				return fmt.Errorf("materializing image pull secret for component %q: %w", c.Name, err)
+			}
+		}
+
 		witWorld.Components = append(witWorld.Components, &runtimev2.Component{
-			Image:          c.Image,
-			PoolSize:       c.PoolSize,
-			MaxInvocations: c.MaxInvocations,
-			LocalResources: localResources,
+			Image:           c.Image,
+			ImagePullSecret: imagePullSecret,
+			PoolSize:        c.PoolSize,
+			MaxInvocations:  c.MaxInvocations,
+			LocalResources:  localResources,
 		})
 	}
 
@@ -202,10 +212,20 @@ func (r *WorkloadReconciler) reconcilePlacement(ctx context.Context, workload *r
 			}
 		}
 
+		var imagePullSecret *runtimev2.ImagePullSecret = nil
+		if s.ImagePullSecret != nil {
+			var err error
+			imagePullSecret, err = MaterializeImagePullSecret(ctx, r.Client, workload.Namespace, s.ImagePullSecret.Name, s.Image)
+			if err != nil {
+				return fmt.Errorf("materializing image pull secret for service: %w", err)
+			}
+		}
+
 		service = &runtimev2.Service{
-			Image:          s.Image,
-			LocalResources: localResources,
-			MaxRestarts:    uint64(s.MaxRestarts),
+			Image:           s.Image,
+			ImagePullSecret: imagePullSecret,
+			LocalResources:  localResources,
+			MaxRestarts:     uint64(s.MaxRestarts),
 		}
 	}
 
